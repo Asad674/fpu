@@ -15,18 +15,18 @@ module add_tb;
     wire [22:0] out_mant_round;
     wire [31:0] out;
     wire overflow, underflow, inexact;
-    wire is_normal1;
-    wire is_subnormal1;
-    wire is_zero1;
-    wire is_inf1;
-    wire is_signalling1;
-    wire is_quiet1;
-    wire is_normal2;
-    wire is_subnormal2;
-    wire is_zero2;
-    wire is_inf2;
-    wire is_signalling2;
-    wire is_quiet2;
+    wire in1_is_norm;
+    wire in1_is_subnorm;
+    wire in1_is_zero;
+    wire in1_is_inf;
+    wire in1_is_snan;
+    wire in1_is_qnan;
+    wire in2_is_norm;
+    wire in2_is_subnorm;
+    wire in2_is_zero;
+    wire in2_is_inf;
+    wire in2_is_snan;
+    wire in2_is_qnan;
 
     integer infile, outfile, err_cnt, test_cnt, ok1, ok2, n; 
 
@@ -37,33 +37,33 @@ module add_tb;
     fp_type type(
         .in1 (in1),
         .in2 (in2),
-        .is_normal1    (is_normal1),
-        .is_subnormal1(is_subnormal1),
-        .is_zero1      (is_zero1),
-        .is_inf1       (is_inf1),
-        .is_signalling1(is_signalling1),
-        .is_quiet1     (is_quiet1),
-        .is_normal2    (is_normal2),
-        .is_subnormal2(is_subnormal2),
-        .is_zero2      (is_zero2),
-        .is_inf2       (is_inf2),
-        .is_signalling2(is_signalling2),
-        .is_quiet2(is_quiet2)
+        .in1_is_norm    (in1_is_norm),
+        .in1_is_subnorm(in1_is_subnorm),
+        .in1_is_zero      (in1_is_zero),
+        .in1_is_inf       (in1_is_inf),
+        .in1_is_snan(in1_is_snan),
+        .in1_is_qnan     (in1_is_qnan),
+        .in2_is_norm    (in2_is_norm),
+        .in2_is_subnorm(in2_is_subnorm),
+        .in2_is_zero      (in2_is_zero),
+        .in2_is_inf       (in2_is_inf),
+        .in2_is_snan(in2_is_snan),
+        .in2_is_qnan(in2_is_qnan)
     );
     // Instantiate the Unit Under Test (UUT)
     add adder (
         .in1 (in1),
         .in2 (in2),
-        .is_sub1(is_subnormal1),
-        .is_sub2(is_subnormal2),
-        .is_zero1(is_zero1),
-        .is_zero2(is_zero2),
-        .is_snan1(is_signalling1),
-        .is_snan2(is_signalling2),
-        .is_qnan1(is_quiet1),
-        .is_qnan2(is_quiet2),
-        .is_inf1 (is_inf1),
-        .is_inf2 (is_inf2),
+        .is_sub1(in1_is_subnorm),
+        .is_sub2(in2_is_subnorm),
+        .is_zero1(in1_is_zero),
+        .is_zero2(in2_is_zero),
+        .is_snan1(in1_is_snan),
+        .is_snan2(in2_is_snan),
+        .is_qnan1(in1_is_qnan),
+        .is_qnan2(in2_is_qnan),
+        .is_inf1 (in1_is_inf),
+        .is_inf2(in2_is_inf),
         .out_sign(out_sign),
         .out_exp(out_exp),
         .out_mant(out_mant),
@@ -84,8 +84,8 @@ module add_tb;
         .RDN(RDN),
         .RNE(RNE),
         .RMM(RMM),
-        .is_zero1(is_zero1),
-        .is_zero2(is_zero2),
+        .is_zero1(in1_is_zero),
+        .is_zero2(in2_is_zero),
         .overflow (overflow),
         .out_sign (out_sign_round),
         .out_exp (out_exp_round),
