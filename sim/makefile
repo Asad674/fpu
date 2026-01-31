@@ -23,7 +23,7 @@ model_sim_compile: modelsim_init
 
 # Run simulation
 modelsim: model_sim_compile
-	vsim.exe -c -do "set MODE $(MODE); set IN $(BASE)/test_$(shell echo $(MODE) | tr A-Z a-z).txt; set OUT $(BASE)/test_$(shell echo $(MODE) | tr A-Z a-z)_result.txt; do sim/wave.do; quit -f"
+	vsim.exe -c -do "set MODE $(MODE); set IN $(VECTORS)/test_$(shell echo $(MODE) | tr A-Z a-z).txt; set OUT $(VECTORS)/test_$(shell echo $(MODE) | tr A-Z a-z)_result.txt; do sim/wave.do; quit -f"
 
 modelsim_all: model_sim_compile
 	$(MAKE) modelsim MODE=RTZ | grep "TOTAL ERRORS"
