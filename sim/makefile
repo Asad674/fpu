@@ -1,16 +1,27 @@
-TEST=fp32_add
-DESIGN_NAME = add
-SRC_DIR = adder
+OP ?= add                  
+TEST ?= fp32_$(OP)
+
 MODELSIM = modelsim.exe
 VLIB = vlib.exe 
 FLIST = sim/filelists/$(TEST).f
-VERILOG_SRC = $(SRC_DIR)/rtl/$(DESIGN_NAME).v  # Source files
-TB_SRC = $(SRC_DIR)/$(DESIGN_NAME)_tb.v  # Testbench file
-SIM_NAME = fp_$(DESIGN_NAME)
-TOP_MODULE = $(DESIGN_NAME)_tb
-WORK_DIR = work_add
+VERILOG_SRC = $(OP)/rtl/$(OP).v  # Source files
+TB_SRC = $(OP)/$(OP)_tb.v  # Testbench file
+SIM_NAME = fp_$(OP)
+TOP_MODULE = $(OP)_tb
+WORK_DIR ?= work_$(OP)
 MODE ?= RNE
-VECTORS = $(SRC_DIR)/vectors
+VECTORS = $(OP)/vectors
+GUI ?= 0
+VSIM_FLAGS := -c
+QUIT_CMD := quit -f
+
+ifeq ($(GUI),1)
+VSIM_FLAGS =
+QUIT_CMD   =
+else
+VSIM_FLAGS = -c
+QUIT_CMD   = quit -f
+endif
 
 # Initialize ModelSim work library
 modelsim_init:
@@ -23,7 +34,7 @@ model_sim_compile: modelsim_init
 
 # Run simulation
 modelsim: model_sim_compile
-	vsim.exe -c -do "set MODE $(MODE); set IN $(VECTORS)/test_$(shell echo $(MODE) | tr A-Z a-z).txt; set OUT $(VECTORS)/test_$(shell echo $(MODE) | tr A-Z a-z)_result.txt; do sim/wave.do; quit -f"
+	vsim.exe -c -do "set OP $(OP); set MODE $(MODE); set IN $(VECTORS)/test_$(shell echo $(MODE) | tr A-Z a-z).txt; set OUT $(VECTORS)/test_$(shell echo $(MODE) | tr A-Z a-z)_result.txt; do sim/wave.do; $(QUIT_CMD)"
 
 modelsim_all: model_sim_compile
 	$(MAKE) modelsim MODE=RTZ | grep "TOTAL ERRORS"
