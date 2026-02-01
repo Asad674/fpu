@@ -12,6 +12,7 @@ module rounding(
     input RDN,
     input RMM,
     input overflow,
+    input is_add,
     output out_sign,
     output reg [22:0] out_mant,
     output reg [7:0] out_exp
@@ -26,7 +27,7 @@ assign add_one_flag = (RUP && !result_sign && |result_mant[2:0]) ||
                       (RNE && ((result_mant[2:0] > 3'b100) || (result_mant[3:0] == 4'b1100))) ||
                       (RMM && (result_mant[2:0] > 3'b011));
 
-assign out_sign = (result_is_zero | (RDN & is_zero1 & is_zero2 & (in1_sign | in2_sign))) ? RDN : result_sign;
+assign out_sign = (is_add && (result_is_zero || (RDN && is_zero1 && is_zero2 && (in1_sign || in2_sign)))) ? RDN : result_sign;
 
 always @(*)begin
     if (result_exp == 8'd0 && result_mant == 26'd0 && ~is_zero1 && ~is_zero2)begin
@@ -57,8 +58,14 @@ always @(*)begin
 
     else begin
         if (RNE || RMM || (!result_sign && RUP) || (result_sign && RDN))begin
-            out_exp = 8'b11111111;
-            out_mant = result_mant[25:3];
+            if (is_add) begin
+                out_exp = 8'b11111111;
+                out_mant = result_mant[25:3];
+            end
+            else begin
+                out_exp = 8'b11111111;
+                out_mant = 23'd0;
+            end
         end
         else begin
             out_exp = 8'b11111110;
