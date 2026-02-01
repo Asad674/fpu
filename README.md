@@ -4,7 +4,9 @@ IEEE-754 compliant FP32 Floating-Point Unit in Verilog, currently featuring a fu
 The project uses ModelSim with a flexible Makefile-driven workflow.
 All key parameters are configurable at runtime.
 
-##Basic simulation
+##
+Basic simulation
+##
 ```
 make modelsim OP=add MODE=RNE
 make modelsim OP=mul MODE=RNE
