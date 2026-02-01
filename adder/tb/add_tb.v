@@ -84,6 +84,7 @@ module add_tb;
         .RDN(RDN),
         .RNE(RNE),
         .RMM(RMM),
+        .is_add (1'b1),
         .is_zero1(in1_is_zero),
         .is_zero2(in2_is_zero),
         .overflow (overflow),
